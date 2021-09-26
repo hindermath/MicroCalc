@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{6C22BE6C-ED0E-460C-8A36-1E6F3319129C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MicroCalc.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MicroCalc">
+        <MSBuild Projects="MicroCalc.dproj"/>
+    </Target>
+    <Target Name="MicroCalc:Clean">
+        <MSBuild Projects="MicroCalc.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MicroCalc:Make">
+        <MSBuild Projects="MicroCalc.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MicroCalc"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MicroCalc:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MicroCalc:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
