@@ -1296,11 +1296,11 @@ begin
 {        Read(Kbd,Ch);}
         Ch := readkey;
         if KeyPressed then
-        begin
-{          read(kbd,Ch);}
-          Ch := readkey;
-          IBMCh(Ch);
-        end;
+          begin
+  {          read(kbd,Ch);}
+              Ch := readkey;
+              IBMCh(Ch);
+          end;
         case Ch of
           ^E:       MoveUp;                                        {  02 }
           ^X,^J:    MoveDown;                                      {  02 }
