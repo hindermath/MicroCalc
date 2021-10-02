@@ -1,9 +1,4 @@
 program MicroCalc;
-
-{$IFDEF FPC}
-  {$MODE Delphi}
-{$ENDIF}
-
 {
     MICROCALC DEMONSTRATION PROGRAM  Version 1.00A
 
@@ -29,12 +24,27 @@ program MicroCalc;
 
 {$R *.res}
 
+{
+    MICROCALC DEMONSTRATION PROGRAM  Version 1.00A
+
+  This program is hereby donated to the public domain
+  for non-commercial use only.  Dot commands are  for
+  the program lister: LISTT.PAS  (available with  our
+  TURBO TUTOR):    .PA, .CP20, etc...
+
+  INSTRUCTIONS
+  1.  Compile this program using the TURBO.COM compiler.
+      If a memory overflow occurs, compile the program:
+      CALCMAIN.PAS which will include this program.
+
+  2.  Exit the program by typing: /Q
+
+ Here is a note to the compiler:                                     }
+
+{$R-,U-,V-,X-,C-}
+
 uses
-{$IFnDEF FPC}
   System.SysUtils,
-{$ELSE}
-       SysUtils,
-{$ENDIF}
   Crt32 in 'Crt32.pas';
 
 const

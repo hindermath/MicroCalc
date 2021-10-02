@@ -1,9 +1,5 @@
 unit Crt32;
 
-{$IFDEF FPC}
-  {$MODE Delphi}
-{$ENDIF}
-
 {$Define NEW_STYLES}
 
 {..$Define HARD_CRT}      {Redirect STD_...}
@@ -111,28 +107,18 @@ procedure OverwriteChrXY(X, Y: Byte; Chr: AnsiChar);
 implementation
 {$IfDef Win32}
 
-uses
-{$IFDEF FPC}
-  Windows,
-{$ELSE}
-       Windows,
-{$ENDIF}
-  SysUtils;
+uses Windows, SysUtils;
 
 type
   POpenText = ^TOpenText;
-  TOpenText = function(var F: Text; Mode: Word): Integer; {far;}
+  TOpenText = function(var F: Text; Mode: Word): Integer; far;
 
 var
   IsWinNT: boolean;
   PtrOpenText: POpenText;
   hConsoleInput: THandle;
   hConsoleOutput: THandle;
-  {$IFDEF FPC}
-  ConsoleScreenRect: SMALL_RECT;
-  {$ELSE}
   ConsoleScreenRect: TSmallRect;
-  {$ENDIF}
   StartAttr: word;
   LastX, LastY: byte;
   SoundDuration: integer;
@@ -146,7 +132,7 @@ var
 {  This function handles the Write and WriteLn commands }
 {  }
 
-function TextOut(var F: Text): Integer; {far;}
+function TextOut(var F: Text): Integer; far;
   {$IfDef OneByOne}
 var
   dwSize: DWORD;
@@ -166,12 +152,8 @@ begin
         Inc(dwSize);
       end;
       {$Else}
-        {$IFDEF FPC}
-          WriteStrXY(LastX, LastY, BufPtr^, BufPos);
-        {$ELSE}
-          WriteStrXY(LastX, LastY, BufPtr, BufPos);
-        {$ENDIF}
-        FillChar(BufPtr^, BufPos + 1, #0);
+      WriteStrXY(LastX, LastY, BufPtr, BufPos);
+      FillChar(BufPtr^, BufPos + 1, #0);
       {$EndIf}
       BufPos := 0;
     end;
@@ -182,7 +164,7 @@ end;
 {  This function handles the exchanging of Input or Output }
 {  }
 
-function OpenText(var F: Text; Mode: Word): Integer; {far;}
+function OpenText(var F: Text; Mode: Word): Integer; far;
 var
   OpenResult: integer;
 begin
@@ -653,11 +635,7 @@ begin
   Coord.X := SourceScreenRect.Left;
   Coord.Y := SourceScreenRect.Top + 1;
   dwSize := SourceScreenRect.Right - SourceScreenRect.Left + 1;
-  {$IFDEF FPC}
-    ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, SourceScreenRect, Coord, CI);
-  {$ELSE}
-    ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, nil, Coord, CI);
-  {$ENDIF}
+  ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, nil, Coord, CI);
   Dec(Coord.Y);
   FillConsoleOutputAttribute(hConsoleOutput, TextAttr, dwSize, Coord, dwCount);
 end;
@@ -676,11 +654,7 @@ begin
   Coord.X := SourceScreenRect.Left;
   Coord.Y := SourceScreenRect.Top - 1;
   dwSize := SourceScreenRect.Right - SourceScreenRect.Left + 1;
-  {$IFDEF FPC}
-    ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, SourceScreenRect, Coord, CI);
-  {$ELSE}
-    ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, nil, Coord, CI);
-  {$ENDIF}
+  ScrollConsoleScreenBuffer(hConsoleOutput, SourceScreenRect, nil, Coord, CI);
   FillConsoleOutputAttribute(hConsoleOutput, TextAttr, dwSize, Coord, dwCount);
 end;
 
@@ -818,7 +792,7 @@ end;
 {  Console Event Handler }
 {  }
 {$IfDef CRT_EVENT}
-function ConsoleEventProc(CtrlType: DWORD): Bool; stdcall; {far;}
+function ConsoleEventProc(CtrlType: DWORD): Bool; stdcall; far;
 var
   S: {$IfDef Win32}ShortString{$Else}String{$EndIf};
   Message: PAnsiChar;
