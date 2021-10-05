@@ -27,7 +27,9 @@ program MicroCalc;
 
 {$APPTYPE CONSOLE}
 
-{$R *.res}
+{$IFnDEF FPC}
+         {$R *.res}
+{$ENDIF}
 
 uses
 {$IFnDEF FPC}
