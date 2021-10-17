@@ -14,7 +14,7 @@ unit Crt32;
 
 
 Interface
-  {$IfDef Win32}
+{$IfDef Win32}
   Const
     { CRT modes of original CRT unit }
     BW40 = 0;     { 40x25 B/W on Color Adapter }
@@ -113,7 +113,7 @@ implementation
 
 uses
 {$IFDEF FPC}
-  Windows,
+    Windows,
 {$ELSE}
        Windows,
 {$ENDIF}
@@ -1057,7 +1057,7 @@ initialization
 
 finalization
   Done;
-  {$Endif win32}
+{$Endif win32}
 end.
 
 
