@@ -34,10 +34,12 @@ program MicroCalc;
 uses
 {$IFnDEF FPC}
   System.SysUtils,
+Crt32 in 'Crt32.pas'
 {$ELSE}
        SysUtils,
+Crt
 {$ENDIF}
-  Crt32 in 'Crt32.pas';
+  ;
 
 const
   FXMax: Char  = 'G';  { Maximum number of columns in spread sheet   }
