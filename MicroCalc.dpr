@@ -34,10 +34,10 @@ program MicroCalc;
 uses
 {$IFnDEF FPC}
   System.SysUtils,
-Crt32 in 'Crt32.pas'
+  Crt32_64 in 'Crt32_64.pas'
 {$ELSE}
-       SysUtils,
-Crt
+  SysUtils,
+  Crt
 {$ENDIF}
   ;
 

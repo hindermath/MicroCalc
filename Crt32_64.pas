@@ -1,4 +1,4 @@
-unit Crt32;
+unit Crt32_64;
 
 {$IFDEF FPC}
   {$MODE Delphi}
@@ -14,7 +14,7 @@ unit Crt32;
 
 
 Interface
-{$IfDef Win32}
+(* {$IfDef Win32} *)
   Const
     { CRT modes of original CRT unit }
     BW40 = 0;     { 40x25 B/W on Color Adapter }
@@ -106,10 +106,10 @@ function MouseReset: Boolean;
 procedure WriteChrXY(X, Y: Byte; Chr: AnsiChar);
 procedure WriteStrXY(X, Y: Byte; Str: PAnsiChar; dwSize: Integer);
 procedure OverwriteChrXY(X, Y: Byte; Chr: AnsiChar);
-{$EndIf Win32}
+(* {$EndIf Win32} *)
 
 implementation
-{$IfDef Win32}
+(* {$IfDef Win32} *)
 
 uses
 {$IFDEF FPC}
@@ -747,6 +747,7 @@ begin
   begin
     Windows.Beep(SoundFrequency, SoundDuration)
   end
+{$IFnDEF Win64}
   else
   begin
     asm
@@ -777,6 +778,7 @@ begin
     @2:
     end;
   end;
+{$ENDIF Win64}
 end;
 
 procedure NoSound;
@@ -785,6 +787,7 @@ begin
   begin
     Windows.Beep(SoundFrequency, 0);
   end
+{$IFnDEF Win64}
   else
   begin
       asm
@@ -794,6 +797,7 @@ begin
         out  $61,Al
       end;
   end;
+{$ENDIF Win64}
   {SetSoundIOPermissionMap(LocalIOPermission_OFF);}
 end;
 { --- End of Interface functions & procedures of original CRT unit --- }
@@ -1057,7 +1061,7 @@ initialization
 
 finalization
   Done;
-{$Endif win32}
+(* {$Endif win32} *)
 end.
 
 
