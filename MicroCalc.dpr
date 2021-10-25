@@ -1,9 +1,3 @@
-program MicroCalc;
-
-{$IFDEF FPC}
-  {$MODE Delphi}
-{$ENDIF}
-
 {
     MICROCALC DEMONSTRATION PROGRAM  Version 1.00A
 
@@ -20,6 +14,12 @@ program MicroCalc;
   2.  Exit the program by typing: /Q
 
  Here is a note to the compiler:                                     }
+program MicroCalc;
+
+{$IFDEF FPC}
+  {$MODE Delphi}
+{$ENDIF}
+
 
 {$R-,U-,V-,X-,C-}
 
