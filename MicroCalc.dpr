@@ -76,6 +76,9 @@ var
   Ch:            AnsiChar;              { Last read character            }
   MCFile:        file of CellRec;   { File to store sheets in        }
   AutoCalc:      boolean;           { Recalculate after each entry?  }
+{$IFnDEF FPC}
+  XlsSupport:    boolean;           { Support Excel file format?     }
+{$ENDIF}
 
  { For easy reference the procedures and functions are grouped in mo-}
  { dules called MC-MOD00 through MC-MOD05.                           }
@@ -135,6 +138,17 @@ begin
   else Flash(60,'AutoCalc: OFF',false);
 end;
 
+{$IFnDEF FPC}
+procedure XlsSupp;
+begin
+  XlsSupport := not XlsSupport;
+  if XlsSupport then
+    Flash(74, 'Xls:On ', false)
+  else
+    Flash(74, 'Xls:Off', false)
+end;
+{$ENDIF}
+
 
 {.PA}
 {*******************************************************************}
@@ -160,6 +174,12 @@ begin
   LowVideo;
   if AutoCalc then  Flash(60,'AutoCalc: ON' ,false)
   else Flash(60,'AutoCalc: OFF',false);
+{$IFnDEF FPC}
+  if XlsSupport then
+    Flash(74, 'Xls:On ', false)
+  else
+    Flash(74, 'Xls:Off', false);
+{$ENDIF}
   Flash(33,'  Type / for Commands',false);
 end;
 
@@ -185,6 +205,9 @@ begin
     end;
   end;
   AutoCalc:=True;
+{$IFnDEF FPC}
+  XlsSupport := False;
+{$ENDIF}
   FX:='A'; FY:=1;            { First field in upper left corner  }
 end;
 
@@ -1234,7 +1257,11 @@ procedure Commands;
 begin
   GotoXY(1,24);
   HighVideo;
+{$IFnDEF FPC}
+  Write('/ restore Quit, Load, Save, Recalculate, Print, Format, AutoCalc, XlsSupp, Help ');
+{$ELSE}
   Write('/ restore Quit, Load, Save, Recalculate, Print, Format, AutoCalc, Help ');
+{$ENDIF}
 {  Read(Kbd,Ch);}
   Ch := readkey;
   Ch:=UpCase(Ch);
@@ -1249,6 +1276,7 @@ begin
     '/': Update;                                               {  01 }
     'C': Clear;                                                {  01 }
     'P': Print;                                                {  03 }
+    'X': XlsSupp;
   end;
   Grid;                                                        {  01 }
   GotoCell(FX,FY);                                             {  02 }
