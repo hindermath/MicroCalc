@@ -34,7 +34,10 @@ program MicroCalc;
 uses
 {$IFnDEF FPC}
   System.SysUtils,
-  Crt32_64 in 'Crt32_64.pas'
+  Crt32_64 in 'Crt32_64.pas',
+  VCL.FlexCel.Core,
+  FlexCel.XlsAdapter,
+  FlexCel.Render
 {$ELSE}
   SysUtils,
   Crt
