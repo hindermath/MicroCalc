@@ -34,7 +34,8 @@ program MicroCalc;
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
   DEFINE ein Dollar-Zeichen voranstellen.
 }
-{$DEFINE FLEXCEL}
+{DEFINE FLEXCEL}
+
 uses
 {$IFnDEF FPC}
   System.SysUtils,
@@ -439,6 +440,9 @@ end;
 procedure Save;
 var I: SheetIndex;
 J: integer;
+{$IFDEF FLEXCEL}
+xls: TXlsFile;
+{$ENDIF}
 begin
   HighVideo;
   Msg('Save: Enter filename  ');
@@ -447,12 +451,29 @@ begin
   begin
     Assign(MCFile,FileName);
     Rewrite(MCFile);
+{$IFDEF FLEXCEL}
+    xls := TXlsFile.Create(1, TExcelFileFormat.v2019, True);
+{$ENDIF}
     for I:='A' to FXmax do
     begin
       for J:=1 to FYmax do
+      {$IFDEF FLEXCEL}
+      begin
+        if XlsSupport = True then
+        begin
+          xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);
+        end
+        else
+          write(MCFile, Sheet[I,J]);
+      end
+      {$ELSE}
       write(MCfile,Sheet[I,J]);
+      {$ENDIF}
     end;
     Grid;
+{$IFDEF FLEXCEL}
+    xls.Save(filename+'.xlsx');
+{$ENDIF}
     Close(MCFile);
     LowVideo;
     GotoCell(FX,FY);

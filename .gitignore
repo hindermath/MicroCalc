@@ -104,3 +104,5 @@ lib/
 *.app/
 
 # End of https://www.toptal.com/developers/gitignore/api/freepascal,delphi,lazarus
+*.MCS
+*.xlsx
