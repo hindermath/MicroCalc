@@ -31,18 +31,31 @@ program MicroCalc;
          {$R *.res}
 {$ENDIF}
 
+{ Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
+  DEFINE ein Dollar-Zeichen voranstellen.
+}
+{$DEFINE FLEXCEL}
 uses
 {$IFnDEF FPC}
   System.SysUtils,
-  Crt32_64 in 'Crt32_64.pas',
-  VCL.FlexCel.Core,
-  FlexCel.XlsAdapter,
-  FlexCel.Render
+  Crt32_64 in 'Crt32_64.pas'
+  {$IFDEF FLEXCEL}
+    ,
+    VCL.FlexCel.Core,
+    FlexCel.XlsAdapter,
+    FlexCel.Render
+  {$ENDIF}
+  ;
 {$ELSE}
   SysUtils,
   Crt
+  {$IFDEF FLEXCEL}
+    ,
+    LCL.FlexCel.Core,
+    FlexCel.XlsAdapter,
+    FlexCel.Render
+  {$ENDIF}
 {$ENDIF}
-  ;
 
 const
   FXMax: Char  = 'G';  { Maximum number of columns in spread sheet   }
@@ -76,7 +89,7 @@ var
   Ch:            AnsiChar;              { Last read character            }
   MCFile:        file of CellRec;   { File to store sheets in        }
   AutoCalc:      boolean;           { Recalculate after each entry?  }
-{$IFnDEF FPC}
+{$IFDEF FLEXCEL}
   XlsSupport:    boolean;           { Support Excel file format?     }
 {$ENDIF}
 
@@ -138,7 +151,7 @@ begin
   else Flash(60,'AutoCalc: OFF',false);
 end;
 
-{$IFnDEF FPC}
+{$IFDEF FLEXCEL}
 procedure XlsSupp;
 begin
   XlsSupport := not XlsSupport;
@@ -174,7 +187,7 @@ begin
   LowVideo;
   if AutoCalc then  Flash(60,'AutoCalc: ON' ,false)
   else Flash(60,'AutoCalc: OFF',false);
-{$IFnDEF FPC}
+{$IFDEF FLEXCEL}
   if XlsSupport then
     Flash(74, 'Xls:On ', false)
   else
@@ -205,7 +218,7 @@ begin
     end;
   end;
   AutoCalc:=True;
-{$IFnDEF FPC}
+{$IFDEF FLEXCEL}
   XlsSupport := False;
 {$ENDIF}
   FX:='A'; FY:=1;            { First field in upper left corner  }
@@ -1257,7 +1270,7 @@ procedure Commands;
 begin
   GotoXY(1,24);
   HighVideo;
-{$IFnDEF FPC}
+{$IFDEF FLEXCEL}
   Write('/ restore Quit, Load, Save, Recalculate, Print, Format, AutoCalc, XlsSupp, Help ');
 {$ELSE}
   Write('/ restore Quit, Load, Save, Recalculate, Print, Format, AutoCalc, Help ');
@@ -1276,7 +1289,9 @@ begin
     '/': Update;                                               {  01 }
     'C': Clear;                                                {  01 }
     'P': Print;                                                {  03 }
+{$IFDEF FLEXCEL}
     'X': XlsSupp;
+{$ENDIF}
   end;
   Grid;                                                        {  01 }
   GotoCell(FX,FY);                                             {  02 }

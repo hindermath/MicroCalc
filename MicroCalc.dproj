@@ -205,7 +205,9 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Crt32_64.pas"/>
+        <DCCReference Include="Crt32_64.pas">
+            <Form>$IFDEF FLEXCEL</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
