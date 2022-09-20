@@ -56,6 +56,7 @@ uses
     FlexCel.XlsAdapter,
     FlexCel.Render
   {$ENDIF}
+  ;
 {$ENDIF}
 
 const
