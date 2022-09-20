@@ -442,6 +442,11 @@ var I: SheetIndex;
 J: integer;
 {$IFDEF FLEXCEL}
 xls: TXlsFile;
+
+  procedure SetCellValues(I: SheetIndex; J: integer);
+  begin
+    xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);
+  end;
 {$ENDIF}
 begin
   HighVideo;
@@ -461,7 +466,7 @@ begin
       begin
         if XlsSupport = True then
         begin
-          xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);
+          SetCellValues(I, J);
         end
         else
           write(MCFile, Sheet[I,J]);
@@ -472,7 +477,8 @@ begin
     end;
     Grid;
 {$IFDEF FLEXCEL}
-    xls.Save(filename+'.xlsx');
+    xls.Save(Filename+'.xlsx');
+    xls.Free;
 {$ENDIF}
     Close(MCFile);
     LowVideo;
@@ -483,6 +489,17 @@ end;
 {.CP30}
 
 procedure Load;
+{$IFDEF FLEXCEL}
+var
+  xls: TXlsFile;
+  ColTypes: TArray<TColumnImportType>;
+  CellValue: TCellValue;
+
+  procedure GetCellValues(FX: SheetIndex; FY: integer);
+  begin
+    CellValue := xls.GetCellValue(Ord(FX), FY);
+  end;
+{$ENDiF}
 begin
   HighVideo;
   Msg('Load: Enter filename  ');
@@ -492,18 +509,39 @@ begin
     Msg('File not Found: Enter another filename  ');
     GetFileName(Filename,'MCS');
   until exist(FileName) or (FileName='');
+{$IFDEF FLEXCEL}
+  xls := TXlsFile.Create(1, TExcelFileFormat.v2019, False);
+{$ENDIF}
   if FileName<>'' then
   begin
+{$IFDEF FLEXCEL}
+  xls.Open(FileName+'xlsx',TFileFormats.Xlsx,' ',1,1,ColTypes);
+{$ENDIF}
     ClrScr;
     Msg('Please Wait. Loading definition...');
     Assign(MCFile,FileName);
     Reset(MCFile);
     for FX:='A' to FXmax do
-     for FY:=1 to FYmax do read(MCFile,Sheet[FX,FY]);
+     for FY:=1 to FYmax do
+     {$IFDEF FLEXCEL}
+     begin
+        if XlsSupport = True then
+        begin
+          GetCellValues(FX, FY);
+        end
+        else
+          read(MCFile,Sheet[FX,FY]);
+     end;
+     {$ELSE}
+     read(MCFile,Sheet[FX,FY]);
+     {$ENDIF}
     FX:='A'; FY:=1;
     LowVideo;
     UpDate;
   end;
+{$IFDEF FLEXCEL}
+  xls.Free;
+{$ENDIF}
   GotoCell(FX,FY);
 end;
 
