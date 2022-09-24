@@ -34,7 +34,7 @@ program MicroCalc;
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
   DEFINE ein Dollar-Zeichen voranstellen.
 }
-{DEFINE FLEXCEL}
+{$DEFINE FLEXCEL}
 
 uses
 {$IFnDEF FPC}
@@ -448,7 +448,6 @@ xls: TXlsFile;
   var
     attr: Attributes;
   begin
-    {xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);}
      for attr := Constant to Calculated do
      begin
        if attr in Sheet[I,J].CellStatus then
@@ -456,37 +455,37 @@ xls: TXlsFile;
           case attr of
             Constant:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
             Formula:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
             Txt:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
             OverWritten:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
             Locked:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
             Calculated:
               begin
-                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
                 break
               end
             ;
