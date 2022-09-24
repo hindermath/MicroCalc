@@ -445,8 +445,54 @@ J: integer;
 xls: TXlsFile;
 
   procedure SetCellValues(I: SheetIndex; J: integer);
+  var
+    attr: Attributes;
   begin
-    xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);
+    {xls.SetCellValue(Ord(I), J, Sheet[i,J].Contents);}
+     for attr := Constant to Calculated do
+     begin
+       if attr in Sheet[I,J].CellStatus then
+       begin
+          case attr of
+            Constant:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+            Formula:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+            Txt:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+            OverWritten:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+            Locked:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+            Calculated:
+              begin
+                xls.SetCellFromString(Ord(I), J, Sheet[I,J].Contents);
+                break
+              end
+            ;
+          end;
+       end;
+     end;
   end;
 {$ENDIF}
 begin
@@ -455,10 +501,19 @@ begin
   GetFileName(Filename,'MCS');
   if FileName<>'' then
   begin
+{$IFDEF FLEXCEL}
+    if XlsSupport = True then
+    begin
+      xls := TXlsFile.Create(1, TExcelFileFormat.v2019, True);
+    end
+    else
+    begin
+      Assign(MCFile,FileName);
+      Rewrite(MCFile);
+    end;
+{$ELSE}
     Assign(MCFile,FileName);
     Rewrite(MCFile);
-{$IFDEF FLEXCEL}
-    xls := TXlsFile.Create(1, TExcelFileFormat.v2019, True);
 {$ENDIF}
     for I:='A' to FXmax do
     begin
@@ -478,10 +533,18 @@ begin
     end;
     Grid;
 {$IFDEF FLEXCEL}
+  if XlsSupport = True then
+  begin
     xls.Save(Filename+'.xlsx');
     xls.Free;
-{$ENDIF}
+  end
+  else
+  begin
     Close(MCFile);
+  end;
+{$ELSE}
+    Close(MCFile);
+{$ENDIF}
     LowVideo;
     GotoCell(FX,FY);
   end;
@@ -515,13 +578,22 @@ begin
 {$ENDIF}
   if FileName<>'' then
   begin
-{$IFDEF FLEXCEL}
-  xls.Open(FileName+'xlsx',TFileFormats.Xlsx,' ',1,1,ColTypes);
-{$ENDIF}
     ClrScr;
     Msg('Please Wait. Loading definition...');
+{$IFDEF FLEXCEL}
+    if XlsSupport = True then
+    begin
+      xls.Open(FileName+'.xlsx',TFileFormats.Xlsx,' ',1,1,ColTypes);
+    end
+    else
+    begin
+      Assign(MCFile,FileName);
+      Reset(MCFile);
+    end;
+{$ELSE}
     Assign(MCFile,FileName);
     Reset(MCFile);
+{$ENDIF}
     for FX:='A' to FXmax do
      for FY:=1 to FYmax do
      {$IFDEF FLEXCEL}
