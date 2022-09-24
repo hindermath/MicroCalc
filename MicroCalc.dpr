@@ -34,7 +34,7 @@ program MicroCalc;
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
   DEFINE ein Dollar-Zeichen voranstellen.
 }
-{$DEFINE FLEXCEL}
+{DEFINE FLEXCEL}
 
 uses
 {$IFnDEF FPC}
@@ -447,7 +447,9 @@ xls: TXlsFile;
   procedure SetCellValues(I: SheetIndex; J: integer);
   var
     attr: Attributes;
+    sheetIdx: Integer;
   begin
+     sheetIdx := Ord(I)-64;
      for attr := Constant to Calculated do
      begin
        if attr in Sheet[I,J].CellStatus then
@@ -455,37 +457,37 @@ xls: TXlsFile;
           case attr of
             Constant:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
             Formula:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
             Txt:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
             OverWritten:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
             Locked:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
             Calculated:
               begin
-                xls.SetCellFromString(J, (Ord(I)-64), Sheet[I,J].Contents);
+                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
               end
             ;
@@ -559,8 +561,19 @@ var
   CellValue: TCellValue;
 
   procedure GetCellValues(FX: SheetIndex; FY: integer);
+  var
+    sheetIdx: Integer;
   begin
-    CellValue := xls.GetCellValue(Ord(FX), FY);
+    sheetIdx := Ord(FX)-64;
+    CellValue := xls.GetCellValue(FY, sheetIdx);
+    if CellValue.IsNumber then
+    begin
+      Sheet[FX,FY].Contents := CellValue.AsNumber.ToString;
+    end;
+    if CellValue.IsString then
+    begin
+      Sheet[FX,FY].Contents := CellValue.AsString.ToString;
+    end;
   end;
 {$ENDiF}
 begin
