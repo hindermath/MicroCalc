@@ -34,7 +34,7 @@ program MicroCalc;
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
   DEFINE ein Dollar-Zeichen voranstellen.
 }
-{DEFINE FLEXCEL}
+{$DEFINE FLEXCEL}
 
 uses
 {$IFnDEF FPC}
@@ -457,7 +457,7 @@ xls: TXlsFile;
           case attr of
             Constant:
               begin
-                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
+                xls.SetCellValue(J, sheetIdx, Double(Sheet[I,J].Value));
                 break
               end
             ;
@@ -568,11 +568,13 @@ var
     CellValue := xls.GetCellValue(FY, sheetIdx);
     if CellValue.IsNumber then
     begin
-      Sheet[FX,FY].Contents := CellValue.AsNumber.ToString;
+      Sheet[FX,FY].Value := CellValue.AsNumber;
+      {Sheet[FX,FY].Contents := Sheet[FX,FY].Value;}
     end;
     if CellValue.IsString then
     begin
       Sheet[FX,FY].Contents := CellValue.AsString.ToString;
+      Sheet[FX,FY].Value := 0;
     end;
   end;
 {$ENDiF}
