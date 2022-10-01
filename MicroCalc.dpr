@@ -569,12 +569,14 @@ var
     if CellValue.IsNumber then
     begin
       Sheet[FX,FY].Value := CellValue.AsNumber;
-      {Sheet[FX,FY].Contents := Sheet[FX,FY].Value;}
+      Sheet[FX,FY].Contents := FloatToStr(Sheet[FX,FY].Value);
+      Sheet[FX,FY].CellStatus := [Constant];
     end;
     if CellValue.IsString then
     begin
       Sheet[FX,FY].Contents := CellValue.AsString.ToString;
       Sheet[FX,FY].Value := 0;
+      Sheet[FX,FY].CellStatus := [Txt];
     end;
   end;
 {$ENDiF}
