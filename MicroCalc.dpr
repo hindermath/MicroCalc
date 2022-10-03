@@ -59,6 +59,8 @@ uses
   ;
 {$ENDIF}
 
+  procedure Recalculate; Forward;
+
 const
   FXMax: Char  = 'G';  { Maximum number of columns in spread sheet   }
   FYMax        = 21;   { Maximum number of lines in spread sheet     }
@@ -458,19 +460,16 @@ xls: TXlsFile;
             Constant:
               begin
                 if Sheet[I,J].CellStatus = [Constant,Formula,Calculated] then
-                  xls.SetCellValue(J, sheetIdx, '=' + Sheet[I,J].Contents)
+                  xls.SetCellValue(J, sheetIdx, TFormula.Create('=' + Sheet[I,J].Contents))
                 else
                   xls.SetCellValue(J, sheetIdx, Double(Sheet[I,J].Value));
-
                 break
-              end
-            ;
+              end;
             Txt:
               begin
                 xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break
-              end
-            ;
+              end;
           end;
        end;
      end;
@@ -539,6 +538,8 @@ var
   xls: TXlsFile;
   ColTypes: TArray<TColumnImportType>;
   CellValue: TCellValue;
+  AFormular: TFormula;
+  AString: string;
 
   procedure GetCellValues(FX: SheetIndex; FY: integer);
   var
@@ -557,6 +558,14 @@ var
       Sheet[FX,FY].Contents := CellValue.AsString.ToString;
       Sheet[FX,FY].Value := 0;
       Sheet[FX,FY].CellStatus := [Txt];
+    end;
+    if CellValue.IsFormula then
+    begin
+      AFormular := CellValue.AsFormula;
+      AString := AFormular.Text;
+      Delete(AString,1,1);
+      Sheet[FX,FY].Contents := AString;
+      Sheet[FX,FY].CellStatus := [Constant, Formula];
     end;
   end;
 {$ENDiF}
@@ -595,9 +604,7 @@ begin
      {$IFDEF FLEXCEL}
      begin
         if XlsSupport = True then
-        begin
-          GetCellValues(FX, FY);
-        end
+          GetCellValues(FX, FY)
         else
           read(MCFile,Sheet[FX,FY]);
      end;
@@ -609,6 +616,7 @@ begin
     UpDate;
   end;
 {$IFDEF FLEXCEL}
+  Recalculate;
   xls.Free;
 {$ENDIF}
   GotoCell(FX,FY);
