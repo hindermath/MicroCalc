@@ -457,35 +457,15 @@ xls: TXlsFile;
           case attr of
             Constant:
               begin
-                xls.SetCellValue(J, sheetIdx, Double(Sheet[I,J].Value));
-                break
-              end
-            ;
-            Formula:
-              begin
-                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
+                if Sheet[I,J].CellStatus = [Constant,Formula,Calculated] then
+                  xls.SetCellValue(J, sheetIdx, '=' + Sheet[I,J].Contents)
+                else
+                  xls.SetCellValue(J, sheetIdx, Double(Sheet[I,J].Value));
+
                 break
               end
             ;
             Txt:
-              begin
-                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
-                break
-              end
-            ;
-            OverWritten:
-              begin
-                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
-                break
-              end
-            ;
-            Locked:
-              begin
-                xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
-                break
-              end
-            ;
-            Calculated:
               begin
                 xls.SetCellFromString(J, sheetIdx, Sheet[I,J].Contents);
                 break

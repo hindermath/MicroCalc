@@ -109,3 +109,4 @@ lib/
 *.MCS
 *.MCS
 *.MCS
+Win32/Debug/a.MCS
