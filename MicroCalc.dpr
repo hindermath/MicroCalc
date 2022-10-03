@@ -59,7 +59,8 @@ uses
   ;
 {$ENDIF}
 
-  procedure Recalculate; Forward;
+{Using it before implemented}
+procedure Recalculate; Forward;
 
 const
   FXMax: Char  = 'G';  { Maximum number of columns in spread sheet   }
