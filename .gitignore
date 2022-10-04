@@ -110,3 +110,4 @@ lib/
 *.MCS
 *.MCS
 Win32/Debug/a.MCS
+Win32/Debug/MicroCalc.zip
