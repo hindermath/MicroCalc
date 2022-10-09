@@ -604,11 +604,29 @@ begin
   HighVideo;
   Msg('Load: Enter filename  ');
   GetFileName(Filename,'MCS');
-  if (Filename<>'') then if (not exist(FileName)) then
-  repeat
-    Msg('File not Found: Enter another filename  ');
-    GetFileName(Filename,'MCS');
-  until exist(FileName) or (FileName='');
+  if (Filename<>'') then
+  begin
+{$IFDEF FLEXCEL}
+    if XlsSupport = True then
+    begin
+      if (not exist(FileName+'.xlsx')) then
+      repeat
+        Msg('File not Found: Enter another filename  ');
+        GetFileName(Filename,'MCS');
+      until exist(FileName+'.xlsx') or (FileName='');
+    end
+    else
+    begin
+{$ENDIF}
+      if (not exist(FileName)) then
+      repeat
+        Msg('File not Found: Enter another filename  ');
+        GetFileName(Filename,'MCS');
+      until exist(FileName) or (FileName='');
+{$IFDEF FLEXCEL}
+    end;
+{$ENDIF}
+  end;
 {$IFDEF FLEXCEL}
   xls := TXlsFile.Create(1, TExcelFileFormat.v2019, False);
 {$ENDIF}
