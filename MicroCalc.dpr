@@ -34,7 +34,7 @@ program MicroCalc;
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
   DEFINE ein Dollar-Zeichen voranstellen.
 }
-{$DEFINE FLEXCEL}
+{DEFINE FLEXCEL}
 
 uses
 {$IFnDEF FPC}
