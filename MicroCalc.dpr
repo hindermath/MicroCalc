@@ -451,6 +451,8 @@ xls: TXlsFile;
   var
     attr: Attributes;
     sheetIdx: Integer;
+    charIdx: Integer;
+    AZaehler: Integer;
   begin
      sheetIdx := Ord(I)-64;
      for attr := Constant to Calculated do
@@ -460,9 +462,22 @@ xls: TXlsFile;
           case attr of
             Constant:
               begin
-                if Sheet[I,J].CellStatus = [Constant,Formula,Calculated] then
+                if Sheet[I,J].CellStatus = [Constant,Formula,Calculated] then {Ist das eine Formel?}
+                begin
+                  charIdx := AnsiPos('>', Sheet[I,J].Contents); {Ist mmindestens ein Bereich von Zellen zu berechnen?}
+                  if charIdx <> 0 then {Dann die Formel Excel-kompatibel umwandeln}
+                  begin
+                    for AZaehler := 1 to Length(Sheet[I,J].Contents) do
+                    begin
+                      if Sheet[I,J].Contents[AZaehler] = '>' then
+                        Sheet[I,J].Contents[AZaehler] := ':';
+                    end;
+                    Sheet[I,J].Contents := 'Sum'+Sheet[I,J].Contents;
+                  end;
+                  {Formel endgültig schreiben}
                   xls.SetCellValue(J, sheetIdx, TFormula.Create('=' + Sheet[I,J].Contents))
-                else
+                end
+                else {Sonst Zahlenwert}
                   xls.SetCellValue(J, sheetIdx, Double(Sheet[I,J].Value));
                 break
               end;
@@ -545,6 +560,8 @@ var
   procedure GetCellValues(FX: SheetIndex; FY: integer);
   var
     sheetIdx: Integer;
+    charIdx: Integer;
+    AZaehler: Integer;
   begin
     sheetIdx := Ord(FX)-64;
     CellValue := xls.GetCellValue(FY, sheetIdx);
@@ -564,7 +581,20 @@ var
     begin
       AFormular := CellValue.AsFormula;
       AString := AFormular.Text;
-      Delete(AString,1,1);
+      Delete(AString,1,1); {= von Formel entfernen}
+      charIdx := AnsiPos('(', Astring); {Wenn vor der Klammer ein Kommando steht generell entfernen, damit kann MicroCalc nichts anfangen}
+      if charIdx > 1 then
+        for AZaehler := 1 to charIdx-1 do
+          Delete(AString,1,1);
+      charIdx := AnsiPos(':', Astring); {Ist mmindestens ein Bereich von Zellen zu berechnen?}
+      if charIdx <> 0 then {Dann die Formel Excel-kompatibel umwandeln}
+      begin
+        for AZaehler := 1 to Length(AString) do
+        begin
+          if AString[AZaehler] = ':' then
+            AString[AZaehler] := '>';
+        end;
+      end;
       Sheet[FX,FY].Contents := AString;
       Sheet[FX,FY].CellStatus := [Constant, Formula];
     end;
