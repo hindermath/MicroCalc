@@ -28,7 +28,7 @@ program MicroCalc;
 {$APPTYPE CONSOLE}
 
 {$IFnDEF FPC}
-         {$R *.res}
+  {$R *.res}
 {$ENDIF}
 
 { Um das Projekt mit FlexCel-Support zu übersetzen, der Direktive
